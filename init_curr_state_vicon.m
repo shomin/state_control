@@ -1,4 +1,5 @@
 function curr_state = init_curr_state_vicon(quad, vicon)
+%function curr_state = init_curr_state_vicon(quad, vicon)
 
     disp('Initializing curr_state');
 
@@ -48,5 +49,7 @@ function curr_state = init_curr_state_vicon(quad, vicon)
     curr_state.x_est = r_quad(1)/1000;
     curr_state.y_est = r_quad(2)/1000;
     curr_state.z_est = r_quad(3)/1000;
+    
+    curr_state.state_timer=0;
             
 end

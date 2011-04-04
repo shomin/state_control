@@ -2,7 +2,7 @@ function [BodyGood,World] = match_quad(msg,quad)
 
 Body = quad.Body;
 numpoints = quad.numpoints;
-startpoint=quad.vicon_startaddress;
+startpoint=quad.vicon_start_address;
 
 
 BodyGood = [];

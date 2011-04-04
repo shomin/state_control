@@ -5,6 +5,7 @@ function quad = start_quad(quad_name, vicon)
     switch lower(quad_name)
        case 'kilo'
            disp('Initializing Kilo');
+            quad.name='kilo';
             quad.QuadB_R_QuadBV =[...
                 0.9693   -0.2458    0.0074 ;...
                 0.2457    0.9692    0.0165 ;...
@@ -28,7 +29,8 @@ function quad = start_quad(quad_name, vicon)
             quad.lookfor='QuadrotorKilo2:QuadrotorKilo2 <a-X>';
         
        case 'mike'
-           disp('Initializing Mike');             
+           disp('Initializing Mike'); 
+           quad.name='mike';
            quad.QuadB_R_QuadBV =[...
                 0.9729   -0.2313    0.0013 ;...
                 0.2313    0.9729    0.0071 ;...
@@ -67,7 +69,7 @@ function quad = start_quad(quad_name, vicon)
     num_names = size(vicon.nmsg.names,2);
 
     for i=1:num_names
-        found = strcmp(nmsg.names{i},quad.lookfor);
+        found = strcmp(vicon.nmsg.names{i},quad.lookfor);
         if (found)
             axstart = i;
         end

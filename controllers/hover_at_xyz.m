@@ -1,6 +1,7 @@
 function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
 %function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz(_and_psi))
 
+    pd_cmd = asctec_PDCmd('empty');
 
     %hardcoded stuff
     max_asin = sin(50*pi/180);

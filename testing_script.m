@@ -1,3 +1,10 @@
+addpath('~/git/ipc-bridge/ipc_bridge_matlab/bin/');
+
+addpath ~/git/ros-pkg/mrslsandbox/quadrotor_dynamics/matlab_quadrotor_control/control/
+addpath ~/git/ros-pkg/mrslsandbox/quadrotor_dynamics/matlab_quadrotor_control/control/controllers/
+
+
+
 gains.kp_x = 0.35/(0.7^2);
 gains.kd_x = 0.35/(0.7);
 gains.kp_y = 0.35/(0.7^2);
@@ -5,36 +12,46 @@ gains.kd_y = 0.35/(0.7);
 gains.kp_z = 20/(0.3^2);
 gains.kd_z = 20/(0.3);
 
+%%
+vicon=start_vicon
 
-%start_quad will do all of this (but correctly obviously)
-kilo.pd_id=1;
-kilo.vicon_start_address=50;
-kilo.numpoints=5; % maybe take out
-kilo.QuadB_R_QuadBV =[...
-    0.9693   -0.2458    0.0074 ;...
-    0.2457    0.9692    0.0165 ;...
-   -0.0113   -0.0142    0.9998 ];
-kilo.T_rel_BV=[...
-   38.4301 ;...
-    0.4528 ;...
-   55.6232 ];
-kilo.th_trim=0;
-kilo.theta_trim=0;
-kilo.yaw_trim=0;
-kilo.phi_trim=0;
-kilo.Body = [...
-    -117.346 -8.06174 -6.04038;...
-    -1.53775 -43.8166 27.6408;...
-    -22.1789 91.4266 -7.2163;...
-    53.5173 -18.6318 -7.00836;...
-    87.5452 -20.9165 -7.3758]';
 
-addpath('~/git/ipc-bridge/ipc_bridge_matlab/bin/');
+mike=start_quad('Mike',vicon)
 
-addpath ~/git/ros-pkg/mrslsandbox/quadrotor_dynamics/matlab_quadrotor_control/control/
-addpath ~/git/ros-pkg/mrslsandbox/quadrotor_dynamics/matlab_quadrotor_control/control/controllers/
+%%
+curr_state=init_curr_state_vicon(mike,vicon)
+
+
+
+start_pt = [-1.5 -1 .7 0];
+
+hover_pt = start_pt + [0 0 .3 0];
 
 
 clear states
 
-states(1) = create_state(@hover_at_xyz, gains, [0 0 1 0] , @ec_timer , 5)
+b1 = @(curr_state) Gamepad('GetButton',1,1);
+
+states(1) = create_state(@hover_at_xyz, gains, hover_pt , b1)
+
+states(end+1) = create_state(@hover_at_xyz, gains, hover_pt +[.5 0 0 0], @ec_timer , 2)
+
+states(end+1) = create_state(@hover_at_xyz, gains, hover_pt +[.5 .5 0 0], @ec_timer , 2)
+
+states(end+1) = create_state(@hover_at_xyz, gains, hover_pt +[0 .5 0 0], @ec_timer , 2)
+
+states(end+1) = create_state(@hover_at_xyz, gains, hover_pt, @ec_timer , 2)
+
+states(end+1) = create_state(@hover_at_xyz, gains, start_pt , @ec_timer , 2)
+
+
+
+run_states(mike,curr_state, states, @vicon_update, vicon);
+
+kill_thrust_quad(mike)
+
+
+
+%%
+stop_quad(mike)
+stop_vicon(vicon)
