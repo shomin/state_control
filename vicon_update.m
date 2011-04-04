@@ -1,6 +1,6 @@
 function curr_state = vicon_update(quad, curr_state, vicon)
 
-    msg = vicon_Values('read',vicon.sd_id,2);
+    msg = vicon_Values('read',vicon.sid,2);
     
     
     %hardcoded stuff

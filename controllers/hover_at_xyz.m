@@ -32,8 +32,12 @@ function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
     x_des = xyz_and_psi(1);
     y_des = xyz_and_psi(2);
     z_des = xyz_and_psi(3);
-    psi_des = xyz_and_psi(4);
     
+    if(length(xyz_and_psi)==3)
+        psi_des=0;
+    else
+        psi_des = xyz_and_psi(4);
+    end
 
     %current position and speed from curr_state
     x_est=curr_state.xyz_est(1);
@@ -44,8 +48,9 @@ function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
     yd_est=curr_state.xyzd_est(2);
     zd_est=curr_state.xyzd_est(3);
     
-    phi = curr_state.phi;
-    theta = curr_state.theta;    
+    %phi = curr_state.phi;  %Don't need current phi for controller
+    %theta = curr_state.theta;   %Don't need current theta for controller
+    
     psi = curr_state.psi;
     
     %trims from the quadrotor-specific argurment
