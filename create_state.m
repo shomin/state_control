@@ -26,7 +26,7 @@ state.gains=gains;
 num_end_conds=0; % initialize to no ending conditions
 
 for i=1:length(varargin)
-    if(num_end_conds==0) %no ending conditions yet; these must be controller input variables
+    if(num_end_conds==0 && ~isa(varargin{i},'function_handle')) %no ending conditions yet; these must be controller input variables
         state.cntrl_args{i}=varargin{i};
         
     elseif(isa(varargin{i},'function_handle')) %new ending condition

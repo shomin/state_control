@@ -1,6 +1,6 @@
 function curr_state = init_curr_state_vicon(quad, vicon)
 
-
+    disp('Initializing curr_state');
 
     msg = vicon_Values('read',vicon.sid,2);
     while(isempty(msg))
@@ -37,6 +37,8 @@ function curr_state = init_curr_state_vicon(quad, vicon)
 
 
     curr_state.framelast = msg.values(1);
+    curr_state.first_frame = msg.values(1);
+    curr_state.first_frame_of_state = msg.values(1);
 
 
     curr_state.xd_est = 0;

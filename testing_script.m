@@ -29,8 +29,12 @@ kilo.Body = [...
     53.5173 -18.6318 -7.00836;...
     87.5452 -20.9165 -7.3758]';
 
+addpath('~/git/ipc-bridge/ipc_bridge_matlab/bin/');
 
 addpath ~/git/ros-pkg/mrslsandbox/quadrotor_dynamics/matlab_quadrotor_control/control/
 addpath ~/git/ros-pkg/mrslsandbox/quadrotor_dynamics/matlab_quadrotor_control/control/controllers/
 
-states(1) = create_state(@hover_at_xyz, gains, [0 0 1 0])
+
+clear states
+
+states(1) = create_state(@hover_at_xyz, gains, [0 0 1 0] , @ec_timer , 5)

@@ -1,5 +1,5 @@
 function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
-%function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz)
+%function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz(_and_psi))
 
 
     %hardcoded stuff
@@ -40,13 +40,13 @@ function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
     end
 
     %current position and speed from curr_state
-    x_est=curr_state.xyz_est(1);
-    y_est=curr_state.xyz_est(2);
-    z_est=curr_state.xyz_est(3);
+    x_est=curr_state.x_est;
+    y_est=curr_state.y_est;
+    z_est=curr_state.z_est;
     
-    xd_est=curr_state.xyzd_est(1);
-    yd_est=curr_state.xyzd_est(2);
-    zd_est=curr_state.xyzd_est(3);
+    xd_est=curr_state.xd_est;
+    yd_est=curr_state.yd_est;
+    zd_est=curr_state.zd_est;
     
     %phi = curr_state.phi;  %Don't need current phi for controller
     %theta = curr_state.theta;   %Don't need current theta for controller
