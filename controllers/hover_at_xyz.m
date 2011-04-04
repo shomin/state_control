@@ -1,5 +1,5 @@
-function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
-%function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz(_and_psi))
+function [pd_cmd curr_state] = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
+%function [pd_cmd curr_state] = hover_at_xyz(curr_state, quad, gains, xyz(_and_psi))
 
     pd_cmd = asctec_PDCmd('empty');
 
@@ -35,10 +35,17 @@ function pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
     z_des = xyz_and_psi(3);
     
     if(length(xyz_and_psi)==3)
-        psi_des=0;
+        psi_des=curr_state.psi_des;
     else
         psi_des = xyz_and_psi(4);
     end
+    
+    %set curr_state.x_des etc.
+    
+    curr_state.x_des=x_des;
+    curr_state.y_des=y_des;
+    curr_state.z_des=z_des;
+    curr_state.psi_des=psi_des;
 
     %current position and speed from curr_state
     x_est=curr_state.x_est;

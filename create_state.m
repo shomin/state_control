@@ -22,6 +22,11 @@ state.controller_type=controller_type;
 
 state.gains=gains;
 
+state.cntrl_args = {};
+
+state.end_condition={};
+
+state.end_condition_args={};
 
 num_end_conds=0; % initialize to no ending conditions
 

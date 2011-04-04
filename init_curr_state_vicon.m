@@ -39,7 +39,6 @@ function curr_state = init_curr_state_vicon(quad, vicon)
 
     curr_state.framelast = msg.values(1);
     curr_state.first_frame = msg.values(1);
-    curr_state.first_frame_of_state = msg.values(1);
 
 
     curr_state.xd_est = 0;
@@ -51,5 +50,10 @@ function curr_state = init_curr_state_vicon(quad, vicon)
     curr_state.z_est = r_quad(3)/1000;
     
     curr_state.state_timer=0;
+    
+    curr_state.x_des=curr_state.x_est;
+    curr_state.y_des=curr_state.y_est;
+    curr_state.z_des=curr_state.z_est;
+    curr_state.psi_des=curr_state.psi;
             
 end

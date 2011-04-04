@@ -65,6 +65,12 @@ function quad = start_quad(quad_name, vicon)
     %--------------------
     
     quad.pd_id = asctec_PDCmd('connect','publisher','matlab_pd_cmd',quad.node_name);
+    
+    
+    pd_cmd = asctec_PDCmd('empty');
+    asctec_PDCmd('send', quad.pd_id, pd_cmd);
+
+
    
     num_names = size(vicon.nmsg.names,2);
 

@@ -23,3 +23,5 @@ function stop_quad(quad)
     asctec_PDCmd('disconnect',quad.pd_id);
     
     
+    
+    

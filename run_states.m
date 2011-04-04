@@ -39,18 +39,26 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
             curr_state = update_function(quad, curr_state, update_arg);
             
             %control
-            
-            pd_cmd = controller(curr_state, quad, gains, cntrl_args{:});
-            
+            if(~isempty(cntrl_args))
+                [pd_cmd, curr_state] = controller(curr_state, quad, gains, cntrl_args{:});
+            else
+                [pd_cmd, curr_state] = controller(curr_state, quad, gains);
+            end
             %check for completion
             
             for j=1:length(end_condition)
                 
-                if(feval(end_condition{j},curr_state, end_condition_args{j}{:}))
-                    complete=1;
-                    completion_by=func2str(end_condition{j});
-                end
-            
+                if(~isempty(end_condition_args))
+                    if(feval(end_condition{j},curr_state, end_condition_args{j}{:}))
+                        complete=1;
+                        completion_by=func2str(end_condition{j});
+                    end
+                else
+                    if(feval(end_condition{j},curr_state))
+                        complete=1;
+                        completion_by=func2str(end_condition{j});
+                    end
+                end            
             end
             
             %send unless complete
