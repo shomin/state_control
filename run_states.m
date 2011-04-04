@@ -33,6 +33,7 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         while(~complete)
             
             curr_state.state_timer = toc;
+            curr_state.first_run_in_state=1;
             
             %update
             

@@ -55,5 +55,7 @@ function curr_state = init_curr_state_vicon(quad, vicon)
     curr_state.y_des=curr_state.y_est;
     curr_state.z_des=curr_state.z_est;
     curr_state.psi_des=curr_state.psi;
+    
+    curr_state.first_run_in_state=0;
             
 end

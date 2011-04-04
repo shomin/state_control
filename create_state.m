@@ -7,9 +7,10 @@ end
 
 if(~isstruct(gains))
     error('Gains must be a struct');
-elseif(~all(isfield(gains,{'kp_x' 'kp_y' 'kp_z' 'kd_x' 'kd_y' 'kd_z'})))
+elseif(~all(isfield(gains,{'kp_x' 'kp_y' 'kp_z' 'kd_x' 'kd_y' 'kd_z' 'ki_x' 'ki_y' 'ki_z'})))
     error('Missing the proper gains (or they dont have the right field names');
 end
+
 
 %------------------------
 %------------------------
@@ -45,8 +46,10 @@ for i=1:length(varargin)
     end   
 end
 
-if(nargin(controller_type)~=(3+length(state.cntrl_args)))
-    error('Incorrent number of arguments for the controller type');
-end
+
+
+% if(nargin(controller_type)~=(3+length(state.cntrl_args)))
+%     error('Incorrent number of arguments for the controller type');
+% end
 
 end
