@@ -5,8 +5,4 @@ function vicon = start_vicon()
     pause(1.2)
     vicon.nmsg = vicon_Names('read',nid,10);
     
-    msg = vicon_Values('read',vicon.sid,2);
-    
-    vicon.framelast = msg.values(1);
-    
-    
+end

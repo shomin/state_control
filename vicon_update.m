@@ -26,7 +26,7 @@ function curr_state = vicon_update(quad, curr_state, vicon)
                 Rot_diff = curr_state.last_Rot'*W_R_QuadB; %this is K_R_K+1
                 Rot_metric = trace(Rot_diff);
                 
-                if(Rot_metric<-2.5) %change this to -1.1 to disable
+                if(Rot_metric<-2.5 && ~isempty(curr_state.last_Rot_diff)) %change this to -1.1 to disable
                     %this is bad data point
                     %assume it kept rotating with the same angular velocity
                     %as last time
@@ -55,11 +55,16 @@ function curr_state = vicon_update(quad, curr_state, vicon)
         curr_state.theta = theta - (theta>pi)*2*pi;
         curr_state.psi = psi - (psi>pi)*2*pi;
 
-        framelast=vicon.framelast;
+        if(~isempty(curr_state.framelast))
+            framelast=curr_state.framelast;
 
-        delT = (msg.values(1) - framelast)/150;
+            delT = (msg.values(1) - framelast)/150;
+        else
+            delT=.1;
+        end
         
-        vicon.framelast = msg.values(1);
+        
+        curr_state.framelast = msg.values(1);
 
 
 
