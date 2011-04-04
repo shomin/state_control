@@ -40,7 +40,7 @@ for i=1:length(varargin)
     end   
 end
 
-if(nargin(controller_type)~=length(state.cntrl_args))
+if(nargin(controller_type)~=(3+length(state.cntrl_args)))
     error('Incorrent number of arguments for the controller type');
 end
 
