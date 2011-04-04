@@ -1,4 +1,5 @@
 function vicon = start_vicon()
+%function vicon = start_vicon()
 
     vicon.sid = vicon_Values('connect','subscriber','asdf','values');
     vicon.nid = vicon_Names('connect','subscriber','asdf2','names');

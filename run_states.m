@@ -17,10 +17,15 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         
         
         
-        controller=states(i).controller_type;
-        gains=states(i).gains;
+        controller = states(i).controller_type;
+        gains = states(i).gains;
+        cntrl_args = states(i).cntrl_arg;
+        end_condition = states(i).end_condition;
+        end_condition_args = states(i).end_condition_args;
         
         complete=0;
+        
+        completion_by=[];
         
         disp(['Beginning State ' num2str(i) ' using controller ' func2str(controller)]);
         
@@ -28,23 +33,37 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
             
             %update
             
-            curr_state = vicon_update(quad, curr_state, vicon)
+            curr_state = update_function(quad, curr_state, update_arg);
             
             %control
+            
+            pd_cmd = controller(curr_state, quad, gains, cntrl_args{:});
+            
             %check for completion
-            %send
             
+            for j=1:length(end_condition)
+                
+                if(feval(end_condition{j},end_condition_args{j}{:}))
+                    complete=1;
+                    completion_by=func2str(end_condition{j});
+                end
             
+            end
             
-            pd_cmd = hover_at_xyz(curr_state, quad, gains, xyz_and_psi)
+            %send unless complete
             
             if(isempty(pd_cmd))
+                complete=1;
+                completion_by='controller completion criteria';
+            elseif(complete)
                 complete=1;
             else
                 asctec_PDCmd('send', quad.pd_id, pd_cmd);
             end
             
         end
+        
+        disp(['State ' num2str(i) ' completed by ' completion_by]);
         
     end
         
