@@ -38,8 +38,10 @@ function curr_state = vicon_update(quad, curr_state, vicon)
             end
                         
             curr_state.last_Rot = W_R_QuadB;
+            r_quad = W_T_QuadBV - W_R_QuadBV * quad.T_rel_BV; %position vector from world origin to body origin
         else
             W_R_QuadB = curr_state.last_Rot;
+            r_quad = 1000*[curr_state.x_est curr_state.y_est curr_state.z_est];
         end
             
 
@@ -49,7 +51,7 @@ function curr_state = vicon_update(quad, curr_state, vicon)
 
         %quat = RotToQuat(W_R_QuadB); %I don't think we need quaternions yet
 
-        r_quad = W_T_QuadBV - W_R_QuadBV * quad.T_rel_BV; %position vector from world origin to body origin
+        
         
         curr_state.phi = phi - (phi>pi)*2*pi;
         curr_state.theta = theta - (theta>pi)*2*pi;
@@ -63,6 +65,7 @@ function curr_state = vicon_update(quad, curr_state, vicon)
             delT=.1;
         end
         
+        curr_state.delT=delT;
         
         curr_state.framelast = msg.values(1);
 

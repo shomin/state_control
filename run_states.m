@@ -30,6 +30,10 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         
         disp(['Beginning State ' num2str(i) ' using controller ' func2str(controller)]);
         
+%         curr_state.th_int=0;
+%         curr_state.theta_int=0;
+%         curr_state.phi_int=0;
+        
         while(~complete)
             
             curr_state.state_timer = toc;
@@ -38,6 +42,8 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
             %update
             
             curr_state = update_function(quad, curr_state, update_arg);
+  
+
             
             %control
             if(~isempty(cntrl_args))
@@ -70,7 +76,11 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
             elseif(complete)
                 complete=1;
             else
-                asctec_PDCmd('send', quad.pd_id, pd_cmd);
+                if(quad.real)
+                    asctec_PDCmd('send', quad.pd_id, pd_cmd);
+                else
+                    %disp('something')
+                end
             end
             
         end

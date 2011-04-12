@@ -50,6 +50,7 @@ function curr_state = init_curr_state_vicon(quad, vicon)
     curr_state.z_est = r_quad(3)/1000;
     
     curr_state.state_timer=0;
+    curr_state.delT=0;
     
     curr_state.x_des=curr_state.x_est;
     curr_state.y_des=curr_state.y_est;
@@ -57,5 +58,9 @@ function curr_state = init_curr_state_vicon(quad, vicon)
     curr_state.psi_des=curr_state.psi;
     
     curr_state.first_run_in_state=0;
+    
+    curr_state.th_int=0;
+    curr_state.phi_int=0;
+    curr_state.theta_int=0;
             
 end

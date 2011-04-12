@@ -84,5 +84,7 @@ function quad = start_quad(quad_name, vicon)
     quad.vicon_start_address = axstart - 4*quad.numpoints;
  
 
+    quad.real=1;
+    
 end
 

@@ -1,41 +1,77 @@
-function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target)
+function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed)
+%function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target, speed)
 
     %THIS INCLUDES THE PARALLEL TRACKING ERROR AND INTEGRAL FEEDBACK
     %this is an x-y-z velocity type controller
     %ti is the tangent vector
     %ni is the normal vector in the
     
+    max_asin = sin(50*pi/180);
+    max_thint=50;
+    max_xyint=0.4;
+    pd_cmd = asctec_PDCmd('empty');
+
+    
     if(curr_state.first_run_in_state)
         curr_state.first_run_in_state=0;
         startpose=[curr_state.x_est curr_state.y_est curr_state.z_est];
     end
-    
     %---------------
-    %deal with psi_des;
+    %deal with these
+    
+    accelrate=[];
+    use_vicon_rpy=1;
+    
+    
+    
     %---------------   
     
-    kp_x = curr_state.kp_x;
-    kd_x = curr_state.kd_x;
-    ki_x = curr_state.ki_x;
+    kp_x = gains.kp_x;
+    kd_x = gains.kd_x;
+    ki_x = gains.ki_x;
     
-    kp_y = curr_state.kp_y;
-    kd_y = curr_state.kd_y;
-    ki_y = curr_state.ki_y;
+    kp_y = gains.kp_y;
+    kd_y = gains.kd_y;
+    ki_y = gains.ki_y;
     
-    kp_z = curr_state.kp_z;
-    kd_z = curr_state.kd_z;
-    ki_z = curr_state.ki_z;
+    kp_z = gains.kp_z;
+    kd_z = gains.kd_z;
+    ki_z = gains.ki_z;
+    
+    if(length(target)==3)
+        target(4)=curr_state.psi_des;
+    end
+
     
     %find tangent line and length
-    ti = target(:)-startpose;
+    ti = target(1:3)-startpose;
     li = sqrt(sum(ti.*ti));
     ti = ti./li;
-
     
-    if(isempty(accelrate))
-        expected_time = li/speed;
+    psides=target(4);
+    
+    psi=curr_state.psi;
 
-        timer=curr_state.timer;
+    th_trim = quad.th_trim;
+    phi_trim = quad.phi_trim;
+    theta_trim = quad.theta_trim;
+    yaw_trim = quad.yaw_trim;
+    
+    x_est=curr_state.x_est;
+    y_est=curr_state.y_est;
+    z_est=curr_state.z_est;
+    
+    xd_est=curr_state.xd_est;
+    yd_est=curr_state.yd_est;
+    zd_est=curr_state.zd_est;
+    
+    phi=curr_state.phi;
+    theta=curr_state.theta;
+
+    if(isempty(accelrate))
+        %expected_time = li/speed;
+
+        timer=curr_state.state_timer;
         
         x_des = startpose(1) +  timer * speed * ti(1);
         y_des = startpose(2) +  timer * speed * ti(2);
@@ -45,8 +81,10 @@ function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target)
         yd_des = speed*ti(2);
         zd_des = speed*ti(3);
         
-                
+      
     else
+        timer=curr_state.state_timer;
+
         t_ramp = speed/accelrate;
         d_ramp = (speed^2) / (accelrate*2);
         
@@ -54,7 +92,7 @@ function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target)
             
             %just ramp up then ramp down immediately cause it is too short
             t_miniramp = sqrt(2*(li/2)/accelrate);
-            expectedtime = 2*t_miniramp;
+            %expectedtime = 2*t_miniramp;
             
             if(timer<t_miniramp)
                              
@@ -67,12 +105,12 @@ function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target)
                 voft = (t_miniramp * accelrate) - (accelrate * t_after);
                 doft = li/2 + (t_miniramp * accelrate * (t_after))  - (accelrate * (t_after)^2/2);
             end
-            
+
         else
             %there is some stall time in the middle where we hold speed
             d_middle = li-2*d_ramp;
             t_middle = d_middle/speed;
-            expectedtime = 2*t_ramp + t_middle;
+            %expectedtime = 2*t_ramp + t_middle;
             
             if(timer<t_ramp)
                 
@@ -102,40 +140,50 @@ function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target)
         zd_des = voft*ti(3);
     end
     
+
     
-    if(j>1)
-        delTint = timer(j)-timer(j-1);
-    else
-        delTint = 0;
-    end
+    curr_state.x_des = x_des;
+    curr_state.y_des = y_des;
+    curr_state.z_des = z_des;
     
-    
-    if(useint)
+        delTint = curr_state.delT;
+
+
+
         %associate integral errors with body and not world
-        xybodyint = delTint * [cos(psiM(qn)), sin(psiM(qn)); -sin(psiM(qn)), cos(psiM(qn))]*[x_desM(qn)-x_estM(qn);y_desM(qn)-y_estM(qn)];
-        zbodyint = delTint * (z_desM(qn)-z_estM(qn));
+        xybodyint = delTint * [cos(psi), sin(psi); -sin(psi), cos(psi)]*[x_des-x_est;y_des-y_est];
+        zbodyint = delTint * (z_des-z_est);
         
-        phi_intM(qn) = phi_intM(qn) + ki_y*-xybodyint(2);
-        theta_intM(qn) = theta_intM(qn) + ki_x*xybodyint(1);
-        th_intM(qn) = th_intM(qn) + ki_z*zbodyint;
+        phi_int=curr_state.phi_int;
+        th_int=curr_state.th_int;
+        theta_int=curr_state.theta_int;
         
-        th_intM(qn) = max(min(th_intM(qn),max_thint),-max_thint);
-        phi_intM(qn) = max(min(phi_intM(qn),max_xyint),-max_xyint);
-        theta_intM(qn) = max(min(theta_intM(qn),max_xyint),-max_xyint);
-    end
+        phi_int = phi_int + ki_y*-xybodyint(2);
+        theta_int = theta_int + ki_x*xybodyint(1);
+        th_int = th_int + ki_z*zbodyint;
+        
+        th_int = max(min(th_int,max_thint),-max_thint);
+        phi_int = max(min(phi_int,max_xyint),-max_xyint);
+        theta_int = max(min(theta_int,max_xyint),-max_xyint);
+        
+        curr_state.phi_int = phi_int;
+        curr_state.th_int = th_int;
+        curr_state.theta_int = theta_int;        
+
     
-    if(~isempty(seqM(qn).seq(seq_cntM(qn)).th_base))
-        th_base = seqM(qn).seq(seq_cntM(qn)).th_base;
-    else
+%     if(~isempty(th_base))
+%         th_base = th_base;
+%     else
         th_base = 88;
-    end
+%    end
     
-    th_cmd = th_base+kp_z*(z_desM(qn)-z_estM(qn)) + kd_z*(zd_desM(qn) - zd_estM(qn))+th_intM(qn)+th_trimM(qn);
-    ux = kp_x*(x_desM(qn) - x_estM(qn)) + kd_x*(xd_desM(qn) - xd_estM(qn));
-    uy = kp_y*(y_desM(qn) - y_estM(qn)) + kd_y*(yd_desM(qn) - yd_estM(qn));
+    th_cmd = th_base+kp_z*(z_des-z_est) + kd_z*(zd_des - zd_est)+th_int+th_trim;
     
-    phides = ux*sin(psiM(qn)) - uy*cos(psiM(qn))+phi_trimM(qn) + phi_intM(qn);
-    thetades = ux*cos(psiM(qn)) + uy*sin(psiM(qn))+theta_trimM(qn) + theta_intM(qn);
+    ux = kp_x*(x_des - x_est) + kd_x*(xd_des - xd_est);
+    uy = kp_y*(y_des - y_est) + kd_y*(yd_des - yd_est);
+    
+    phides = ux*sin(psi) - uy*cos(psi)+phi_trim + phi_int;
+    thetades = ux*cos(psi) + uy*sin(psi)+theta_trim + theta_int;
     
     phides = asin(max(min(phides,max_asin),-max_asin));
     thetades = asin(max(min(thetades,max_asin),-max_asin));
@@ -148,25 +196,27 @@ function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target)
     pd_cmd.kd_yaw = 33;
     
     kp_yaw = 150;
-    psi_diff = mod(psidesM - psiM,2*pi);
+    psi_diff = mod(psides - psi,2*pi);
     psi_diff = psi_diff - (psi_diff>pi)*2*pi;
-    pd_cmd.yaw_delta = kp_yaw * (psi_diff)+yaw_trimM;
+    pd_cmd.yaw_delta = kp_yaw * (psi_diff)+yaw_trim;
     th_cmd = max(min(th_cmd,200),0);
     pd_cmd.thrust = round(th_cmd);
-    
-    
+
+    use_vicon_rpy=0;
     if(use_vicon_rpy)
         pd_cmd.kp_pitch = 0;
         pd_cmd.kp_roll = 0;
         pd_cmd.roll = 0;
         pd_cmd.pitch = 0;
-        pd_cmd.roll_delta = 220 * (phides-phiM);
-        pd_cmd.pitch_delta = 220 * (thetades-thetaM);
-
-        pd_cmd.roll_delta=0;
-        pd_cmd.pitch_delta=0;
+        pd_cmd.roll_delta = 220 * (phides-phi);
+        pd_cmd.pitch_delta = 220 * (thetades-theta);
     else
         pd_cmd.roll = phides;
         pd_cmd.pitch = thetades;
 
     end
+    
+    if(norm([x_des y_des z_des] - target(1:3))<.01)
+        pd_cmd=[];
+    end
+end
