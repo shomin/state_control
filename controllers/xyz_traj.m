@@ -32,21 +32,25 @@ function [pd_cmd,  curr_state] = xyz_traj(curr_state, quad, gains, traj)
     
     % traj is in form [x   y   z   psi   time]
     
+    timer=curr_state.state_timer;
+    
+    traj_time = traj(:,5);
+    
+    ind = find(traj_time<=timer,1,'last');
+    if(isempty(ind))
+        ind=1;
+    end
+    
+    x_des=traj(ind,1);
+    y_des=traj(ind,2);
+    z_des=traj(ind,3);
+    psides=traj(ind,4);
 
-    
-    
-    
-    
-
-    x_des=target(1);
-    y_des=target(2);
-    z_des=target(3);
-    psides=target(4);
     
     curr_state.x_des = x_des;
     curr_state.y_des = y_des;
     curr_state.z_des = z_des;    
-    
+    curr_state.psi_des=psides;
     
     x_est=curr_state.x_est;
     y_est=curr_state.y_est;
@@ -58,9 +62,27 @@ function [pd_cmd,  curr_state] = xyz_traj(curr_state, quad, gains, traj)
     phi=curr_state.phi;
     theta=curr_state.theta;
 
+    th_trim = quad.th_trim;
+    phi_trim = quad.phi_trim;
+    theta_trim = quad.theta_trim;
+    yaw_trim = quad.yaw_trim;
     
     delTint = curr_state.delT;
 
+    ti = [x_des y_des z_des]-[x_est y_est z_est];
+    li = sqrt(sum(ti.*ti));
+    ti = ti./li;
+    
+    if(ind~=length(traj(:,5)))
+        speed=li/(traj(ind+1,5)-traj(ind,5));
+    else
+        speed=li/(traj(ind,5)-traj(ind-1,5));
+    end
+     
+    xd_des = speed*ti(1);
+    yd_des = speed*ti(2);
+    zd_des = speed*ti(3);
+        
 
 
     %calculate integral errors
@@ -124,4 +146,9 @@ function [pd_cmd,  curr_state] = xyz_traj(curr_state, quad, gains, traj)
         pd_cmd.roll = phides;
         pd_cmd.pitch = thetades;
     end
+    
+    if(ind==length(traj(:,5)))
+        pd_cmd=[];
+    end
+    
 end

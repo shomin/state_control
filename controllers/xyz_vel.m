@@ -1,4 +1,4 @@
-function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed)
+function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed, accelrate)
 %function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target, speed)
 
     %THIS INCLUDES THE PARALLEL TRACKING ERROR AND INTEGRAL FEEDBACK
@@ -15,11 +15,15 @@ function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed
     if(curr_state.first_run_in_state)
         curr_state.first_run_in_state=0;
         startpose=[curr_state.x_est curr_state.y_est curr_state.z_est];
+        curr_state.startpose=startpose;
+    else
+        startpose=curr_state.startpose;
     end
+
     %---------------
     %deal with these
     
-    accelrate=[];
+
     use_vicon_rpy=1;
     
     
@@ -215,6 +219,9 @@ function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed
         pd_cmd.pitch = thetades;
 
     end
+    
+    curr_state.phi_des=phides;
+    curr_state.theta_des=thetades;
     
     if(norm([x_des y_des z_des] - target(1:3))<.01)
         pd_cmd=[];

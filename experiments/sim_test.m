@@ -3,7 +3,7 @@
 
 
 
-speed = .1;
+speed = .5;
 
 
 
@@ -22,16 +22,17 @@ gains.ki_z = .3*20/(0.3);
 
 %later
 use_vicon_rpy=1;
-useint = 1;
-accelrate = .7;
 
-%% tester quad
+
+accel = .7;
+
+% tester quad
 
 tester=no_quad();
 
 curr_state=init_curr_state_tester(tester,[-1.5 -1 .7 0]);
 
-clear states
+
 
 
 
@@ -47,31 +48,60 @@ plot3(-1.5+[.35 .35], -1 + [.35 .35], [0 .7])
 plot3(-1.5-[.35 .35], -1 + [.35 .35], [0 .7])
 plot3(-1.5-[.35 .35], -1 - [.35 .35], [0 .7])
 plot3(-1.5+[.35 .35], -1 - [.35 .35], [0 .7])
+
+
+axis([-2 2 -2 2 0 2]);
+grid on
 hold off
 
 
 
+start=[-1.5 -1 .7 0];
 
-%%
 
 clear states
 
 button_press = @(curr_state,button) Gamepad('GetButton',1,button);
 
-states(1) = create_state(@zero_thrust,gains, button_press, 1);
-
-states(2) = create_state(@xyz_vel, gains, [-1.5 -1 1], speed);
-
-states(3) = create_state(@hover_at_xyz, gains, [-1.5 -1 1], button_press, 1);
-
-states(4) = create_state(@xyz_vel, gains, [-1.5 -1 .7], speed);
-
-states(5) = create_state(@hover_at_xyz, gains, [-1.5 -1 .7], button_press, 1);
-
-states(6) = create_state(@zero_thrust,gains, button_press, 1);
 
 
-%%
+states(1) = create_state(@zero_thrust,gains, button_press, 1, @ec_timer, 1);
+states(end+1) = create_state(@xyz_vel, gains, start+[0 0 .3 0], speed,accel);
+states(end+1) = create_state(@xyz_hover, gains, start+[0 0 .3 0], button_press, 1, @ec_timer, 1);
+
+
+
+
+states(end+1) = create_state(@xyz_vel, gains, start+[1 0 .3 0], speed,accel);
+states(end+1) = create_state(@xyz_hover, gains, start+[1 0 .3 0], button_press, 1, @ec_timer, 1);
+
+
+t=0:(2*pi/100):2*pi;
+radius=1;
+circle=[radius.*sin(t)' radius.*-(cos(t)-1)' zeros(length(t),2)];
+dt=.05;
+
+
+
+traj=repmat(start,length(t),1)+repmat([1 0 .3 0],length(t),1)+circle;
+
+traj=[traj (dt:dt:dt*length(t))'];
+
+states(end+1) = create_state(@xyz_traj, gains, traj);
+
+states(end+1) = create_state(@xyz_hover, gains, start+[1 0 .3 0], button_press, 1, @ec_timer, 1);
+
+
+
+states(end+1) = create_state(@xyz_vel, gains, start+[0 0 .3 0], speed,accel);
+
+states(end+1) = create_state(@xyz_hover, gains, start+[0 0 .3 0], button_press, 1, @ec_timer, 1);
+states(end+1) = create_state(@xyz_vel, gains, start, speed,accel);
+states(end+1) = create_state(@xyz_hover, gains, start, button_press, 1, @ec_timer, 1);
+states(end+1) = create_state(@zero_thrust,gains, button_press, 1, @ec_timer, 1);
+
+
+
 run_states(tester,curr_state, states, @sim_update,.01);
 
 %% mike

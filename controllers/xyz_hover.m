@@ -57,6 +57,15 @@ function [pd_cmd,  curr_state] = xyz_hover(curr_state, quad, gains, target)
     psi=curr_state.psi;
     phi=curr_state.phi;
     theta=curr_state.theta;
+    
+    xd_des=0;
+    yd_des=0;
+    zd_des=0;
+    
+    th_trim = quad.th_trim;
+    phi_trim = quad.phi_trim;
+    theta_trim = quad.theta_trim;
+    yaw_trim = quad.yaw_trim;
 
     
     delTint = curr_state.delT;
@@ -124,4 +133,7 @@ function [pd_cmd,  curr_state] = xyz_hover(curr_state, quad, gains, target)
         pd_cmd.roll = phides;
         pd_cmd.pitch = thetades;
     end
+    
+        curr_state.phi_des=phides;
+    curr_state.theta_des=thetades;
 end
