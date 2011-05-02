@@ -1,6 +1,6 @@
 function curr_state = vicon_update(quad, curr_state, vicon)
 
-    msg = vicon_Values('read',vicon.sid,2);
+    msg = vicon_Values('read',vicon.sid,20);
     
     
     %hardcoded stuff
@@ -15,6 +15,7 @@ function curr_state = vicon_update(quad, curr_state, vicon)
 
 
         if(~isempty(BodyGood))
+            disp('good');
             
             [W_R_QuadBV,W_T_QuadBV] = PointsToRot(BodyGood,World);
 

@@ -6,7 +6,7 @@ function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed
     %ti is the tangent vector
     %ni is the normal vector in the
     
-    max_asin = sin(50*pi/180);
+    max_asin = sin(20*pi/180);
     max_thint=50;
     max_xyint=0.4;
     pd_cmd = asctec_PDCmd('empty');

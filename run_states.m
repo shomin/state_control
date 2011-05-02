@@ -1,5 +1,5 @@
-function curr_state = run_states(quad, curr_state, states, update_function, update_arg)
-%function curr_state = run_states(quad, curr_state, states, update_function, update_arg)
+function curr_state = run_states(quad, curr_state, states, update_function, update_arg, log_file)
+%function curr_state = run_states(quad, curr_state, states, update_function, update_arg, log_file)
 
 
     %----------------
@@ -11,12 +11,15 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
     %TODO - input error checking
     %----------------
     
+    disp('Opening the log file');
+    fid=fopen(log_file,'w');
+    
     disp('Starting the State Machine Controller');
     
     n=1;
     
-    %while(n<=length(states))
-    for n=1:length(states)
+    while(n<=length(states))
+    %for n=1:length(states)
         
         
         tic;
@@ -44,6 +47,8 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         curr_state.first_run_in_state=1;
             
         while(~complete)
+            
+            %disp(['Frequency: ' num2str(1/(toc-curr_state.state_timer))]);
             
             curr_state.state_timer = toc;
 
@@ -96,6 +101,8 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
                     %disp('something')
                 end
             end
+            
+            quad_log(fid,curr_state);
             
         end
         

@@ -3,7 +3,7 @@ function [pd_cmd,  curr_state] = xyz_traj(curr_state, quad, gains, traj)
 
     %Trajectory controller with integral gain
     
-    max_asin = sin(50*pi/180);
+    max_asin = sin(20*pi/180);
     max_thint=50;
     max_xyint=0.4;
     pd_cmd = asctec_PDCmd('empty');
@@ -12,7 +12,7 @@ function [pd_cmd,  curr_state] = xyz_traj(curr_state, quad, gains, traj)
 
     
     %gotta deal with this still
-    use_vicon_rpy=1;
+    use_vicon_rpy=0;
     
     
     
@@ -74,10 +74,12 @@ function [pd_cmd,  curr_state] = xyz_traj(curr_state, quad, gains, traj)
     ti = ti./li;
     
     if(ind~=length(traj(:,5)))
-        speed=li/(traj(ind+1,5)-traj(ind,5));
+        speed=sqrt(sum(((traj(ind+1,1:3)-traj(ind,1:3)).^2)))/(traj(ind+1,5)-traj(ind,5));
     else
-        speed=li/(traj(ind,5)-traj(ind-1,5));
+        speed=sqrt(sum(((traj(ind,1:3)-traj(ind-1,1:3)).^2)))/(traj(ind,5)-traj(ind-1,5));
     end
+    
+    %speed=.1;
      
     xd_des = speed*ti(1);
     yd_des = speed*ti(2);
@@ -134,7 +136,7 @@ function [pd_cmd,  curr_state] = xyz_traj(curr_state, quad, gains, traj)
     th_cmd = max(min(th_cmd,200),0);
     pd_cmd.thrust = round(th_cmd);
 
-    use_vicon_rpy=0;
+
     if(use_vicon_rpy)
         pd_cmd.kp_pitch = 0;
         pd_cmd.kp_roll = 0;

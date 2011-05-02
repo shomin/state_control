@@ -3,7 +3,7 @@ function [pd_cmd,  curr_state] = xyz_hover(curr_state, quad, gains, target)
 
     %Hovering controller with integral gain
     
-    max_asin = sin(50*pi/180);
+    max_asin = sin(20*pi/180);
     max_thint=50;
     max_xyint=0.4;
     pd_cmd = asctec_PDCmd('empty');
@@ -30,13 +30,26 @@ function [pd_cmd,  curr_state] = xyz_hover(curr_state, quad, gains, target)
     kd_z = gains.kd_z;
     ki_z = gains.ki_z;
     
-    if(length(target)==3)
-        target(4)=curr_state.psi_des;
+
+    
+    
+    if(curr_state.first_run_in_state && isempty(target))
+        curr_state.first_run_in_state=0;
+        
+        curr_state.x_des = curr_state.x_est;
+        curr_state.y_des = curr_state.y_est;
+        curr_state.z_des = curr_state.z_est;
+        curr_state.psi_des = curr_state.psi;
+        
+    elseif(curr_state.first_run_in_state  && length(target)==3)
+        curr_state.first_run_in_state=0;
+        curr_state.psi_des = curr_state.psi;
     end
     
-    if(isempty(target))
-        target=[curr_state.x_des curr_state.y_des curr_state.z_des curr_state.psi_des];
-    end
+    
+    target=[curr_state.x_des curr_state.y_des curr_state.z_des curr_state.psi_des];
+    
+    
 
     x_des=target(1);
     y_des=target(2);
