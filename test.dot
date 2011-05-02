@@ -1,0 +1,32 @@
+digraph G {
+center = 1;
+size="10,10";
+1 [ label = "zero_thrust" ];
+2 [ label = "xyz_hover" ];
+3 [ label = "xyz_vel" ];
+4 [ label = "xyz_hover" ];
+5 [ label = "xyz_vel" ];
+6 [ label = "xyz_hover" ];
+7 [ label = "xyz_traj" ];
+8 [ label = "xyz_hover" ];
+9 [ label = "xyz_vel" ];
+10 [ label = "xyz_hover" ];
+11 [ label = "xyz_vel" ];
+12 [ label = "xyz_hover" ];
+13 [ label = "zero_thrust" ];
+14 [ label = "END" ];
+1 -> 2 [label="key_press('s')"];
+2 -> 3 [label="key_press('space')"];
+3 -> 4 [label="key_press('b')\n or \ncompletion"];
+4 -> 5 [label="key_press('space')"];
+5 -> 6 [label="key_press('b')\n or \ncompletion"];
+6 -> 7 [label="key_press('space')"];
+7 -> 8 [label="key_press('b')\n or \ncompletion"];
+8 -> 5 [label="key_press('r')"];
+8 -> 9 [label="key_press('space')"];
+9 -> 10 [label="key_press('b')\n or \ncompletion"];
+10 -> 11 [label="key_press('space')"];
+11 -> 12 [label="key_press('b')\n or \ncompletion"];
+12 -> 13 [label="key_press('space')"];
+13 -> 14 [label="key_press('s')\n or \nec_timer(1.5)"];
+}

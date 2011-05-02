@@ -29,6 +29,29 @@ function state_graph(states, type,filename)
                 else
                     end_cond=func2str(states(i).end_condition);
                 end                
+                
+                ec_args=states(i).end_condition_args{j};
+                
+                if(~isempty(ec_args))
+                    args='(';
+                    for k=1:length(ec_args)
+                        if(ischar(ec_args{k}))
+                            args = [args '''' ec_args{k} ''''];
+                        else
+                            args = [args num2str(ec_args{k})];
+                        end
+                        
+                        if( k==length(ec_args))
+                            args= [ args ')'];
+                        else
+                            args= [ args ','];
+                        end
+                    end
+                else
+                    args='()';
+                end
+                        
+                end_cond = [end_cond args];
             end
 
 
@@ -72,7 +95,7 @@ function state_graph(states, type,filename)
     elseif(strcmp(type,'matlab'))
         graph_draw(C','node_labels',names);
     elseif(strcmp(type,'dot'))
-        graph_to_dot(C','node_label',names,'arc_label',edges','filename',[filename '.dot']);
+        graph_to_dot(C','node_label',names,'arc_label',edges','filename',[filename '.dot'],'leftright',0);
         system(['open ' filename '.dot']);
     end
 end
