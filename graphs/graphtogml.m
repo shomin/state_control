@@ -1,4 +1,4 @@
-function graphtogml(fname, adjacency, names, positions)
+function graphtogml(fname, adjacency, names, edge_names, positions)
 %GRAPHTOGML - Outputs an adjacency network in GML format.
 %  The particular output is optimised for use in yEd.
 %  
@@ -34,7 +34,12 @@ function graphtogml(fname, adjacency, names, positions)
 if nargin<3
     names = [];
 end
+
 if nargin<4
+    edge_names=[];
+end
+
+if nargin<5
     positions = [];
 end
 num_nodes = length(adjacency);
@@ -67,6 +72,8 @@ for ii = 1:length(adjacency)
  fprintf(fid,'%s\n','  graphics [');
  fprintf(fid,'%s\n',['   x ' num2str(positions(ii,1))]);
  fprintf(fid,'%s\n',['   y ' num2str(positions(ii,2))]);
+ fprintf(fid,'%s\n','   w 100');
+ fprintf(fid,'%s\n','   h 30');
  fprintf(fid,'%s\n','   type "oval"');
  fprintf(fid,'%s\n','  ]');
  fprintf(fid,'%s\n','  LabelGraphics [');
@@ -81,7 +88,12 @@ for ii=find(adjacency(:))'
  fprintf(fid,'%s\n',['  source ' num2str(tt)]);
  fprintf(fid,'%s\n',['  target ' num2str(ss)]);
  fprintf(fid,'%s\n','  LabelGraphics [');
- fprintf(fid,'%s\n','   type "text"');
+ 
+ if(~isempty(edge_names))
+     fprintf(fid,'%s\n',['   text "', edge_names{ss,tt},'"']);
+ else
+     fprintf(fid,'%s\n','   type "text"');
+ end
  fprintf(fid,'%s\n','  ]');
  fprintf(fid,'%s\n',' ]');
 end

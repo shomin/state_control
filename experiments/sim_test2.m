@@ -12,9 +12,9 @@ gains.kp_y = 0.35/(0.7^2);
 gains.kd_y = 0.35/(0.7);
 gains.kp_z = 20/(0.3^2);
 gains.kd_z = 20/(0.3);
-gains.ki_x = .3*0.35/(0.7);
-gains.ki_y = .3*0.35/(0.7);
-gains.ki_z = .3*20/(0.3);
+gains.ki_x = .5*0.35/(0.7);
+gains.ki_y = .5*0.35/(0.7);
+gains.ki_z = .5*20/(0.3);
 
 %hover
 tgains.kp_x = 0.2/(0.7^2);

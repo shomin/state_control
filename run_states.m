@@ -13,6 +13,7 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
     
     disp('Opening the log file');
     fid=fopen(log_file,'w');
+    disp(['Writing to ' log_file '\n']);
     
     disp('Starting the State Machine Controller');
     

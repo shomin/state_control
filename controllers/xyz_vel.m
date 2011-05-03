@@ -1,4 +1,4 @@
-function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed, accelrate)
+function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed, varargin)
 %function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target, speed)
 
     %THIS INCLUDES THE PARALLEL TRACKING ERROR AND INTEGRAL FEEDBACK
@@ -22,9 +22,25 @@ function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed
 
     %---------------
     %deal with these
-    
 
-    use_vicon_rpy=1;
+    accelrate=[];
+    theta_cmd=[];
+    use_vicon_rpy=0;
+
+    
+    for i = 1:2:nargin-5              % get optional args
+        switch varargin{i}
+            case 'accelrate', accelrate = varargin{i+1};
+                
+            case 'theta_cmd', theta_cmd = varargin{i+1};
+                
+            case 'thrust_cmd', thrust_cmd = varargin{i+1};
+
+            otherwise, error(['Unkown parameter: ' varargin{i}]);
+        end
+    end
+    
+    
     
     
     
@@ -206,7 +222,18 @@ function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed
     th_cmd = max(min(th_cmd,200),0);
     pd_cmd.thrust = round(th_cmd);
 
-    use_vicon_rpy=0;
+    
+    
+    if(~isempty(theta_cmd))
+        thetades = theta_cmd;
+        pd_cmd.kp_pitch = 225;
+        pd_cmd.kd_pitch = 40;
+        th_cmd=thrust_cmd;
+        th_cmd = max(min(th_cmd,200),0);
+        pd_cmd.thrust = round(th_cmd);
+    end
+    
+    
     if(use_vicon_rpy)
         pd_cmd.kp_pitch = 0;
         pd_cmd.kp_roll = 0;

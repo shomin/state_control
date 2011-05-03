@@ -60,21 +60,33 @@ function state_graph(states, type,filename)
                 if(isempty(edges{i + n_change ,i}))
                     edges{i + n_change ,i} = end_cond;                        
                 else
-                    edges{i + n_change ,i} = [edges{i + n_change ,i} '\n or \n' end_cond];
+                    if(strcmp(type, 'gml'))
+                        edges{i + n_change ,i} = [edges{i + n_change ,i} ' or ' end_cond];
+                    else
+                        edges{i + n_change ,i} = [edges{i + n_change ,i} '\n or \n' end_cond];
+                    end
                 end
             elseif( strcmp( exit_func, 'n_minus') )
                 C( i - n_change,i) = 1;        
                 if(isempty(edges{i - n_change ,i}))
                     edges{i - n_change ,i} = end_cond;                        
                 else
-                    edges{i - n_change ,i} = [edges{i - n_change ,i} '\n or \n' end_cond];
+                    if(strcmp(type, 'gml'))
+                        edges{i - n_change ,i} = [edges{i - n_change ,i} ' or ' end_cond];
+                    else
+                        edges{i - n_change ,i} = [edges{i - n_change ,i} '\n or \n' end_cond];                        
+                    end
                 end
             elseif( strcmp( exit_func, 'n_equals') )
                 C( n_change,i) = 1;      
                 if(isempty(edges{n_change ,i}))
                     edges{n_change ,i} = end_cond;                        
-                else                             
-                    edges{n_change ,i} = [edges{n_change ,i} '\n or \n' end_cond];
+                else   
+                    if(strcmp(type, 'gml'))
+                        edges{n_change ,i} = [edges{n_change ,i} ' or ' end_cond];
+                    else
+                        edges{n_change ,i} = [edges{n_change ,i} '\n or \n' end_cond];                        
+                    end
                 end
             end
 
@@ -90,7 +102,7 @@ function state_graph(states, type,filename)
 
 
     if(strcmp(type, 'gml'))
-        graphtogml([filename '.gml'],C,names);
+        graphtogml([filename '.gml'],C,names,edges);
         system(['open ' filename '.gml']);
     elseif(strcmp(type,'matlab'))
         graph_draw(C','node_labels',names);
