@@ -11,6 +11,10 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
     %TODO - input error checking
     %----------------
     
+    if(nargin<6)
+        log_file='default.bin';
+    end
+    
     disp('Opening the log file');
     fid=fopen(log_file,'w');
     disp(['Writing to ' log_file '\n']);
@@ -18,6 +22,8 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
     disp('Starting the State Machine Controller');
     
     n=1;
+    
+    total_time=tic;
     
     while(n<=length(states))
     %for n=1:length(states)
@@ -52,6 +58,8 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
             %disp(['Frequency: ' num2str(1/(toc-curr_state.state_timer))]);
             
             curr_state.state_timer = toc;
+            
+            curr_state.total_time = toc(total_time);
 
             
             %update
@@ -74,6 +82,24 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
                     if(feval(end_condition{j},curr_state, end_condition_args{j}{:}))
                         complete=1;
                         completion_by=func2str(end_condition{j});
+                        
+                        ec_args=end_condition_args{j};
+                        args='(';
+                        for k=1:length(ec_args)
+                            if(ischar(ec_args{k}))
+                                args = [args '''' ec_args{k} ''''];
+                            else
+                                args = [args num2str(ec_args{k})];
+                            end
+
+                            if( k==length(ec_args))
+                                args= [ args ')'];
+                            else
+                                args= [ args ','];
+                            end
+                        end
+                        
+                        completion_by = [completion_by args];
                         
                         new_n = feval(exit_function{j},n, exit_arg(j));
                     end
@@ -106,6 +132,8 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
             quad_log(fid,curr_state);
             
         end
+        
+        
         
         disp(['State ' num2str(n) ' completed by ' completion_by]);
         n=new_n;

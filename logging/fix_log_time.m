@@ -1,4 +1,4 @@
-function fixed_time = fix_log_time(log)
+function [fixed_time, t_zero] = fix_log_time(log)
 
     state_timer=log(:,6);
 

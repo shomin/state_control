@@ -14,12 +14,14 @@ function true = orientation( curr_state, field, cond, value)
     end
     
     switch lower(cond)
-        case 'equals'
+        case {'equals', 'equal_to'}
             true = eval([ 'curr_state.' field]) == value ;            
         case 'over'
             true = eval([ 'curr_state.' field]) > value ;                        
-        case 'below'
-            true = eval([ 'curr_state.' field]) < value ;                        
+        case {'under', 'below'}
+            true = eval([ 'curr_state.' field]) < value ;  
+        otherwise
+            error('not correct conditional input');
     end
            
     

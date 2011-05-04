@@ -62,5 +62,9 @@ function curr_state = init_curr_state_vicon(quad, vicon)
     curr_state.th_int=0;
     curr_state.phi_int=0;
     curr_state.theta_int=0;
+    
+    curr_state.theta_des=0;
+    curr_state.phi_des=0;
             
+    curr_state.plot_handle=[];
 end

@@ -21,7 +21,7 @@ end
 
 x = [curr_state.x_est curr_state.y_est curr_state.z_est]';
 
-R = RPYtoRot(-curr_state.phi,-curr_state.theta,curr_state.psi);
+R = RPYtoRot(-curr_state.phi,-curr_state.theta,-curr_state.psi);
 
 m1 = R * m1 + repmat(x,1,length(m1));
 m24 = R * m24 + repmat(x,1,length(m24));
@@ -29,9 +29,14 @@ m24 = R * m24 + repmat(x,1,length(m24));
 if(isempty(curr_state.plot_handle))
     plot_handle = plot3(m24(1,:),m24(2,:),m24(3,:),m1(1,:),m1(2,:),m1(3,:),'r');
 else
-    set(curr_state.plot_handle,'XData',[m24(1,:) m1(1,:)]);
-    set(curr_state.plot_handle,'YData',[m24(2,:) m1(2,:)]);
-    set(curr_state.plot_handle,'ZData',[m24(3,:) m1(3,:)]);
+    set(curr_state.plot_handle,'XData',m1(1,:));
+    set(curr_state.plot_handle,'YData',m1(2,:));
+    set(curr_state.plot_handle,'ZData',m1(3,:));
+        
+    set(curr_state.plot_handle(2),'XData',m24(1,:));
+    set(curr_state.plot_handle(2),'YData',m24(2,:));
+    set(curr_state.plot_handle(2),'ZData',m24(3,:));
+    
     plot_handle=curr_state.plot_handle;
 end
 
