@@ -20,12 +20,13 @@ hist.theta_int=log(:,18);%18
 hist.theta_des=log(:,19);%19
 hist.phi_des=log(:,20);
 %%
+[fixed_time,t_zero]=fix_log_time(log);
 
 figure(2);
 t=fixed_time;
 figure(2)
 hold off
-plot(t,hist.x_est,t,hist.y_est,t,hist.z_est);
+plot(t,hist.phi,t,hist.theta,t,hist.psi);
 hold on
 bar=plot([0 0], [-5 5], 'k');
 
@@ -55,7 +56,13 @@ curr_state.plot_handle=[];
 
 pause(.1)
 
-for i = 1:10: length(log)
+step=0;
+key=[];
+
+i=1
+iter=3;
+
+while(i<length(log))
 
 
 
@@ -90,10 +97,30 @@ for i = 1:10: length(log)
     
     pause(.01)
     
-    if(~isempty(one_key))
-        pause
-        pause(.1)
+    key=one_key;
+    if(strcmp(key,'space') || step)
+        pause;
+        key=one_key;
+    elseif (strcmp(key,'UpArrow'))
+        iter=iter+1;
+    elseif (strcmp(key,'DownArrow'))
+        iter = max( iter-1, 1);
+    end
+    
+    if(strcmp(key,'RightArrow'))
+        step=1;
+    elseif(strcmp(key,'LeftArrow'))
+        step=1;
+        i=i-(2*iter);
+    elseif(strcmp(key,'space'))
+        step=0;
+        pause(.1);
     end
     
 
+    if(key_press(1,'q'))
+        break;
+    end
+    
+    i=i+iter;
 end

@@ -13,13 +13,23 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
     
     if(nargin<6)
         log_file='default.bin';
+        text_file='default.qlog';
+    else
+        log_file=[log_file '.bin'];
+        text_file=[log_file '.txt'];
     end
     
-    disp('Opening the log file');
+    disp('Opening the log files');
     fid=fopen(log_file,'w');
-    disp(['Writing to ' log_file '\n']);
+    lid=fopen(text_file,'w');
     
-    disp('Starting the State Machine Controller');
+    fprintf(1,['Writing to ' log_file ' and ' text_file '\n']);
+    fprintf(lid,['Writing to ' log_file ' and ' text_file '\n']);
+
+    
+    fprintf(1,'Starting the State Machine Controller\n');
+    fprintf(lid,'Starting the State Machine Controller\n');
+
     
     n=1;
     
@@ -46,7 +56,9 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         
         completion_by=[];
         
-        disp(['Beginning State ' num2str(n) ' using controller ' func2str(controller)]);
+        fprintf(1,['Beginning State ' num2str(n) ' using controller ' func2str(controller) '\n']);
+        fprintf(lid,['Beginning State ' num2str(n) ' using controller ' func2str(controller) '\n']);
+        
         
 %         curr_state.th_int=0;
 %         curr_state.theta_int=0;
@@ -135,12 +147,20 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         
         
         
-        disp(['State ' num2str(n) ' completed by ' completion_by]);
+        fprintf(1,['State ' num2str(n) ' completed by ' completion_by '[state_time = %6.4f, total_time=%6.4f]  \n'],curr_state.state_timer,curr_state.total_time);
+        fprintf(lid,['State ' num2str(n) ' completed by ' completion_by '[state_time = %6.4f, total_time=%6.4f]  \n'],curr_state.state_timer,curr_state.total_time);
+        
         n=new_n;
-        disp(['Moving to state ' num2str(n)]);
+        
+        fprintf(1,['Moving to state ' num2str(n) '\n']);
+        fprintf(lid,['Moving to state ' num2str(n) '\n']);
+
         
     end
-        
+      
+    disp('Closing the logfiles');
+    fclose(fid);
+    fclose(lid);
     
 end
         
