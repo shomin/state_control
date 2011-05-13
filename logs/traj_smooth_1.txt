@@ -1,0 +1,102 @@
+Writing to logs/traj_smooth_1.bin and logs/traj_smooth_1.txt
+Starting the State Machine Controller
+Beginning State 1 using controller zero_thrust
+State 1 completed by orientation('phi','below',-0.43633)
+[state_time = 8.9513, total_time=8.9513]  
+Moving to state 2
+
+Beginning State 2 using controller xyz_hover
+State 2 completed by key_press('space')
+[state_time = 4.2085, total_time=13.1714]  
+Moving to state 3
+
+Beginning State 3 using controller xyz_vel
+State 3 completed by controller completion criteria
+[state_time = 3.4495, total_time=16.6316]  
+Moving to state 4
+
+Beginning State 4 using controller xyz_hover
+State 4 completed by key_press('space')
+[state_time = 2.2609, total_time=18.9029]  
+Moving to state 5
+
+Beginning State 5 using controller xyz_traj
+State 5 completed by controller completion criteria
+[state_time = 10.9403, total_time=29.8610]  
+Moving to state 6
+
+Beginning State 6 using controller xyz_hover
+State 6 completed by ec_timer(0.5)
+[state_time = 0.5011, total_time=30.3721]  
+Moving to state 7
+
+Beginning State 7 using controller xyz_hover
+State 7 completed by key_press('r')
+[state_time = 2.4814, total_time=32.8629]  
+Moving to state 3
+
+Beginning State 3 using controller xyz_vel
+State 3 completed by controller completion criteria
+[state_time = 1.8789, total_time=34.7523]  
+Moving to state 4
+
+Beginning State 4 using controller xyz_hover
+State 4 completed by key_press('space')
+[state_time = 1.6759, total_time=36.4393]  
+Moving to state 5
+
+Beginning State 5 using controller xyz_traj
+State 5 completed by controller completion criteria
+[state_time = 10.9366, total_time=47.3806]  
+Moving to state 6
+
+Beginning State 6 using controller xyz_hover
+State 6 completed by ec_timer(0.5)
+[state_time = 0.5084, total_time=47.9003]  
+Moving to state 7
+
+Beginning State 7 using controller xyz_hover
+State 7 completed by key_press('r')
+[state_time = 1.2710, total_time=49.1825]  
+Moving to state 3
+
+Beginning State 3 using controller xyz_vel
+State 3 completed by controller completion criteria
+[state_time = 1.8271, total_time=51.0309]  
+Moving to state 4
+
+Beginning State 4 using controller xyz_hover
+State 4 completed by key_press('space')
+[state_time = 1.1592, total_time=52.2021]  
+Moving to state 5
+
+Beginning State 5 using controller xyz_traj
+State 5 completed by controller completion criteria
+[state_time = 10.9383, total_time=63.1505]  
+Moving to state 6
+
+Beginning State 6 using controller xyz_hover
+State 6 completed by ec_timer(0.5)
+[state_time = 0.5028, total_time=63.6710]  
+Moving to state 7
+
+Beginning State 7 using controller xyz_hover
+State 7 completed by key_press('space')
+[state_time = 0.8505, total_time=64.5326]  
+Moving to state 8
+
+Beginning State 8 using controller xyz_vel
+State 8 completed by controller completion criteria
+[state_time = 3.6639, total_time=68.2105]  
+Moving to state 9
+
+Beginning State 9 using controller xyz_hover
+State 9 completed by orientation('z_est','over',1.35)
+[state_time = 3.1794, total_time=71.4007]  
+Moving to state 10
+
+Beginning State 10 using controller zero_thrust
+State 10 completed by ec_timer(0.5)
+[state_time = 0.5076, total_time=71.9198]  
+Moving to state 11
+

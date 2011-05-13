@@ -1,5 +1,5 @@
-function curr_state = run_states(quad, curr_state, states, update_function, update_arg, log_file)
-%function curr_state = run_states(quad, curr_state, states, update_function, update_arg, log_file)
+function curr_state = run_states(quad, curr_state, states, update_function, update_arg, log_file, graph_handle)
+%function curr_state = run_states(quad, curr_state, states, update_function, update_arg, log_file, graph_handle)
 
 
     %----------------
@@ -15,8 +15,18 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         log_file='default.bin';
         text_file='default.qlog';
     else
-        log_file=[log_file '.bin'];
         text_file=[log_file '.txt'];
+        log_file=[log_file '.bin'];
+    end
+    
+    if(nargin<7)
+        graph_handle=[];
+        graph=0;
+    else
+        graph=1;
+        color='r';
+        set(graph_handle(1,2),'FaceColor',color);
+        drawnow;
     end
     
     disp('Opening the log files');
@@ -64,6 +74,7 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
 %         curr_state.theta_int=0;
 %         curr_state.phi_int=0;
         curr_state.first_run_in_state=1;
+        
             
         while(~complete)
             
@@ -147,17 +158,28 @@ function curr_state = run_states(quad, curr_state, states, update_function, upda
         
         
         
-        fprintf(1,['State ' num2str(n) ' completed by ' completion_by '[state_time = %6.4f, total_time=%6.4f]  \n'],curr_state.state_timer,curr_state.total_time);
-        fprintf(lid,['State ' num2str(n) ' completed by ' completion_by '[state_time = %6.4f, total_time=%6.4f]  \n'],curr_state.state_timer,curr_state.total_time);
+        fprintf(1,['State ' num2str(n) ' completed by ' completion_by '\n[state_time = %6.4f, total_time=%6.4f]  \n'],curr_state.state_timer,curr_state.total_time);
+        fprintf(lid,['State ' num2str(n) ' completed by ' completion_by '\n[state_time = %6.4f, total_time=%6.4f]  \n'],curr_state.state_timer,curr_state.total_time);
         
-        n=new_n;
+        if(graph)
+            set(graph_handle(n,2),'FaceColor','w');
+            set(graph_handle(new_n,2),'FaceColor',color);    
+            drawnow;
+        end
         
-        fprintf(1,['Moving to state ' num2str(n) '\n']);
-        fprintf(lid,['Moving to state ' num2str(n) '\n']);
+        n=new_n;        
+        
+        fprintf(1,['Moving to state ' num2str(n) '\n\n']);
+        fprintf(lid,['Moving to state ' num2str(n) '\n\n']);
 
         
     end
-      
+    
+    if(graph)
+        set(graph_handle(new_n,2),'FaceColor','w');   
+        drawnow;
+    end
+    
     disp('Closing the logfiles');
     fclose(fid);
     fclose(lid);

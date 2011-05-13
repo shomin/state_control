@@ -1,4 +1,4 @@
-function state_graph(states, type,filename)
+function [x, y, h] = state_graph(states, type,filename)
 %function state_graph(states, type,filename)
 
 
@@ -8,12 +8,56 @@ function state_graph(states, type,filename)
     C=zeros(n+1,n+1);
 
     edges=cell(n+1,n+1);
+    
+%     if(strcmp(type,'matlab'))
+%         nodes=zeros(n+1,1);
+%         if(nargin==3)
+%             curr_node=filename;        
+%             nodes(curr_node)=1;
+%         end
+%     end
 
     for i = 1:n
         names{i}=func2str(states(i).controller_type);
+        
+        if(~strcmp(type,'matlab'))
+            if(strcmp(names{i}, 'xyz_hover'))
+                if(isempty(states(i).cntrl_args{1}))
+                    if(strcmp(type, 'gml'))
+                        names{i}=strcat(names{i},'[in place]');
+                    else
+                        names{i}=strcat(names{i},'\n','[in place]');
+                    end
+                else
+                    if(strcmp(type, 'gml'))
+                        names{i}=strcat(names{i}, mat2str(states(i).cntrl_args{1},3));
+                    else
+                        names{i}=strcat(names{i}, '\n',mat2str(states(i).cntrl_args{1},3));
+                    end
+                end
+            elseif(~strcmp(names{i}, 'xyz_traj'))
+                if(strcmp(type, 'gml'))
+                    if(~isempty(states(i).cntrl_args))
+                        names{i}=strcat(names{i}, mat2str(states(i).cntrl_args{1},3));
+                    end
+                else
+                    cnt=1;
+                    while(cnt<=length(states(i).cntrl_args))
+                        if(~ischar(states(i).cntrl_args{cnt}))
+                            temp = mat2str(states(i).cntrl_args{cnt},3);
+                        else
+                            temp = strcat(states(i).cntrl_args{cnt},':', mat2str(states(i).cntrl_args{cnt+1},3));
+                            cnt=cnt+1;
+                        end
 
+                        names{i}=strcat(names{i},'\n',temp);
 
-
+                        cnt = cnt+1;
+                    end
+                end
+            end
+        end
+            
         for j = 1: (length(states(i).end_condition)+1)
 
 
@@ -101,11 +145,15 @@ function state_graph(states, type,filename)
     names{n+1}='END';
 
 
+    x=[];y=[];h=0;
+    
     if(strcmp(type, 'gml'))
         graphtogml([filename '.gml'],C,names,edges);
         system(['open ' filename '.gml']);
     elseif(strcmp(type,'matlab'))
-        graph_draw(C','node_labels',names);
+%         [x, y, h] =
+%         graph_draw(C','node_labels',names,'node_shapes',nodes);
+        [x, y, h] = graph_draw(C','node_labels',names);
     elseif(strcmp(type,'dot'))
         graph_to_dot(C','node_label',names,'arc_label',edges','filename',[filename '.dot'],'leftright',0);
         system(['open ' filename '.dot']);

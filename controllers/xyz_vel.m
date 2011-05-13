@@ -1,4 +1,4 @@
-function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed, varargin)
+function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, varargin)
 %function [pd_cmd curr_state] = xyz_vel (curr_state, quad, gains, target, speed)
 
     %THIS INCLUDES THE PARALLEL TRACKING ERROR AND INTEGRAL FEEDBACK
@@ -26,15 +26,20 @@ function [pd_cmd,  curr_state] = xyz_vel (curr_state, quad, gains, target, speed
     accelrate=[];
     theta_cmd=[];
     use_vicon_rpy=0;
+    speed=[];
 
     
-    for i = 1:2:nargin-5              % get optional args
+    for i = 1:2:nargin-4              % get optional args
         switch varargin{i}
             case 'accelrate', accelrate = varargin{i+1};
                 
             case 'theta_cmd', theta_cmd = varargin{i+1};
                 
             case 'thrust_cmd', thrust_cmd = varargin{i+1};
+                
+            case 'use_vicon_rpy', use_vicon_rpy = varargin{i+1}; 
+                
+            case 'speed', speed = varargin{i+1};
 
             otherwise, error(['Unkown parameter: ' varargin{i}]);
         end

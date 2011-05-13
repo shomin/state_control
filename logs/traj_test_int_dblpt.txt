@@ -1,0 +1,52 @@
+Writing to logs/traj_test_int_dblpt.bin and logs/traj_test_int_dblpt.txt
+Starting the State Machine Controller
+Beginning State 1 using controller zero_thrust
+State 1 completed by orientation('phi','below',-0.43633)
+[state_time = 12.5485, total_time=12.5486]  
+Moving to state 2
+
+Beginning State 2 using controller xyz_hover
+State 2 completed by key_press('space')
+[state_time = 4.5578, total_time=17.1172]  
+Moving to state 3
+
+Beginning State 3 using controller xyz_vel
+State 3 completed by controller completion criteria
+[state_time = 3.3574, total_time=20.4877]  
+Moving to state 4
+
+Beginning State 4 using controller xyz_hover
+State 4 completed by key_press('space')
+[state_time = 2.4600, total_time=22.9582]  
+Moving to state 5
+
+Beginning State 5 using controller xyz_traj
+State 5 completed by controller completion criteria
+[state_time = 25.2722, total_time=48.2427]  
+Moving to state 6
+
+Beginning State 6 using controller xyz_hover
+State 6 completed by ec_timer(0.5)
+[state_time = 0.5012, total_time=48.7487]  
+Moving to state 7
+
+Beginning State 7 using controller xyz_hover
+State 7 completed by key_press('space')
+[state_time = 1.0546, total_time=49.8086]  
+Moving to state 8
+
+Beginning State 8 using controller xyz_vel
+State 8 completed by controller completion criteria
+[state_time = 4.0275, total_time=53.8434]  
+Moving to state 9
+
+Beginning State 9 using controller xyz_hover
+State 9 completed by orientation('z_est','over',1.35)
+[state_time = 1.4755, total_time=55.3284]  
+Moving to state 10
+
+Beginning State 10 using controller zero_thrust
+State 10 completed by ec_timer(0.5)
+[state_time = 0.5020, total_time=55.8351]  
+Moving to state 11
+

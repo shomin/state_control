@@ -26,7 +26,7 @@ figure(2);
 t=fixed_time;
 figure(2)
 hold off
-plot(t,hist.phi,t,hist.theta,t,hist.psi);
+plot(t,hist.x_est,t,hist.y_est,t,hist.z_est);
 hold on
 bar=plot([0 0], [-5 5], 'k');
 
@@ -55,6 +55,8 @@ grid on
 curr_state.plot_handle=[];
 
 pause(.1)
+
+
 
 step=0;
 key=[];
@@ -124,3 +126,9 @@ while(i<length(log))
     
     i=i+iter;
 end
+
+%%
+
+figure(1)
+hold on
+plot3(hist.x_est,hist.y_est, hist.z_est,'c')

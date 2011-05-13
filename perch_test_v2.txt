@@ -1,0 +1,3 @@
+Writing to perch_test_v2.bin and perch_test_v2.txt
+Starting the State Machine Controller
+Beginning State 1 using controller zero_thrust

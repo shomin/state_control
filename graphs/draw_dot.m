@@ -45,4 +45,4 @@ if n > 40, fontsz = 7; elseif n < 12, fontsz = 12; else fontsz = 9; end
 figure; clf; axis square      %  now plot 
 [x, y, h] = graph_draw(adj, 'node_labels', labels, 'fontsize', fontsz, ...
                        'node_shapes', zeros(size(x,2),1), 'X', x, 'Y', y);
-delete(tmpLAYOUT); delete(tmpDOTfile);     % clean up temporary files 
+delete(tmpLAYOUT); delete(tmpDOTfile);     % clean up temporary files  
